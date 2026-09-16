@@ -22,8 +22,8 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Nội dung cần tìm"}
-        category: {type: string, enum: [all, vpn, email, wifi, printing, account, security, hardware, software, meeting_room], default: "all", description: "Nhóm hướng dẫn"}
+        query: {type: string, default: "", description: "Từ khóa bổ sung; để trống nếu category đã bao trùm đủ chủ đề cần tìm, chỉ điền khi có chi tiết category không thể hiện được"}
+        category: {type: string, enum: [all, vpn, email, wifi, printing, account, security, hardware, software, meeting_room], default: "all", description: "Nhóm hướng dẫn; chọn đúng nhóm khớp chủ đề thay vì để 'all' khi yêu cầu đã nêu rõ chủ đề"}
         top_k: {type: integer, default: 3, description: "Số kết quả"}
       required: [query]
 
@@ -41,8 +41,8 @@ tools:
     parameters:
       type: object
       properties:
-        asset_id: {type: string, description: "Mã tài sản"}
-        check: {type: string, enum: [all, network, vpn, security, hardware, software], default: "all", description: "Nhóm kiểm tra"}
+        asset_id: {type: string, description: "Mã tài sản; phải là mã cụ thể do người dùng cung cấp hoặc đã có từ kết quả tool trước, không suy đoán hay lấy từ mã khác (ví dụ employee_id)"}
+        check: {type: string, enum: [all, network, vpn, security, hardware, software], default: "all", description: "Nhóm kiểm tra; chọn đúng nhóm khớp với vấn đề người dùng nêu (vd lỗi VPN -> vpn), chỉ dùng 'all' khi yêu cầu kiểm tra tổng quát không nêu vấn đề cụ thể"}
       required: [asset_id]
 
   - name: lookup_user

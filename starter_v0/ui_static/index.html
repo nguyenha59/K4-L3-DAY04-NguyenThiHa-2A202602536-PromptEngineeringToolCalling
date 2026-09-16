@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>IT Helpdesk Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">IT</span>
+        <span class="brand-name">Helpdesk Agent</span>
+        <div class="status-pill" id="statusPill" data-state="idle">
+          <span class="dot"></span>
+          <span id="statusText">Chưa kết nối</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="main-inner">
+
+      <section class="hero-col">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 72 72" width="72" height="72">
+            <rect x="11" y="20" width="50" height="38" rx="11" fill="#0f2340" stroke="#00D9FF" stroke-width="2" />
+            <rect x="30" y="6" width="12" height="14" rx="3" fill="#0f2340" stroke="#00D9FF" stroke-width="2" />
+            <circle cx="36" cy="7" r="2.8" fill="#00D9FF" />
+            <circle cx="26" cy="38" r="5.5" fill="#00D9FF" />
+            <circle cx="46" cy="38" r="5.5" fill="#00D9FF" />
+            <rect x="23" y="48" width="26" height="4.5" rx="2.2" fill="#00D9FF" opacity="0.85" />
+          </svg>
+        </div>
+        <h1>Helpdesk Agent</h1>
+        <p class="hero-desc">Trợ lý hỗ trợ IT nội bộ — kiểm tra dịch vụ, thiết bị, tài khoản và tạo ticket.</p>
+
+        <div class="privacy-card">
+          <span class="privacy-title">Dữ liệu giả lập</span>
+          Toàn bộ dữ liệu trong hệ thống là dữ liệu demo. Không nhập mật khẩu, mã OTP, token hay thông tin cá nhân thật.
+        </div>
+
+        <div class="quick-actions">
+          <div class="section-title">Bắt đầu nhanh</div>
+          <div class="quick-grid" id="suggestions">
+            <button type="button" class="quick-btn" data-text="Dịch vụ VPN production hiện có đang gặp sự cố không?">Kiểm tra VPN</button>
+            <button type="button" class="quick-btn" data-text="Kiểm tra Wi-Fi trên laptop của mình giúp nhé.">Máy tôi bị lỗi mạng</button>
+            <button type="button" class="quick-btn" data-text="Tài khoản nhân viên EMP-1003 đang báo bị khóa, tra cứu tình trạng giúp mình.">Tài khoản</button>
+            <button type="button" class="quick-btn" data-text="Soạn ticket Wi-Fi LT-240 mức medium giúp mình.">Tạo ticket</button>
+          </div>
+        </div>
+
+        <div class="config-card">
+          <div class="section-title">Cấu hình Agent</div>
+          <label class="field">
+            Provider
+            <select id="providerSelect">
+              <option value="openai" selected>OpenAI</option>
+              <option value="openrouter">OpenRouter</option>
+              <option value="anthropic">Anthropic</option>
+              <option value="gemini">Gemini</option>
+            </select>
+          </label>
+
+          <details class="advanced">
+            <summary>Cài đặt nâng cao</summary>
+            <label class="field">
+              Model (để trống dùng mặc định)
+              <input id="modelInput" type="text" placeholder="vd: gpt-4o-mini" />
+            </label>
+            <label class="field">
+              Nhãn phiên bản (artifact version)
+              <input id="versionInput" type="text" value="v5" />
+            </label>
+            <p class="hint">Mỗi lần bắt đầu phiên sẽ nạp lại <code>artifacts/system_prompt.md</code> và <code>artifacts/tools.yaml</code> hiện tại, tạo transcript mới trong <code>transcripts/</code>.</p>
+          </details>
+
+          <button id="startBtn" class="btn-primary btn-block">Bắt đầu phiên</button>
+        </div>
+      </section>
+
+      <section class="chat-col">
+        <div class="chat-panel">
+          <div class="chat-panel-header">Conversation</div>
+          <div class="chat-panel-divider"></div>
+
+          <div class="chat" id="chatScroll">
+            <div class="chat-inner" id="chatLog">
+              <div class="conversation-empty" id="conversationEmpty">
+                <p>Chưa có cuộc hội thoại</p>
+                <p class="muted">Chọn một vấn đề bên trái hoặc tự nhập bên dưới để bắt đầu</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-panel-divider"></div>
+
+          <form class="composer" id="composerForm">
+            <div class="composer-card">
+              <textarea id="messageInput" rows="1" placeholder="Nhập vấn đề bạn đang gặp..." disabled></textarea>
+              <button type="submit" class="send-btn" id="sendBtn" disabled aria-label="Gửi">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path d="M3 11.5L20.5 4L13 21.5L10.8 13.7L3 11.5Z" fill="none" stroke="#09182F" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
+                </svg>
+              </button>
+            </div>
+            <p class="composer-hint">Enter để gửi · Shift + Enter để xuống dòng</p>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

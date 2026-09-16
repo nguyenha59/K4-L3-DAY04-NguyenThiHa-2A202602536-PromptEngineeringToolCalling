@@ -77,6 +77,18 @@ python run_eval.py --provider openrouter --version v0 --suite base --eval-cases 
 
 Thay `openrouter` bằng `openai`, `anthropic` hoặc `gemini` khi dùng provider khác. Không commit `.env`.
 
+## Chạy UI chat
+
+Đã xây UI web cục bộ (Flask) tại `starter_v0/ui_server.py`, hiển thị tool call/input/kết quả-lỗi/version cho từng lượt chat và tự lưu transcript vào `starter_v0/transcripts/`.
+
+```powershell
+cd starter_v0
+.\.venv\Scripts\Activate.ps1
+python ui_server.py
+```
+
+Mở trình duyệt tại `http://127.0.0.1:5000`, chọn provider (mặc định `openai`), nhập nhãn version (mặc định `v5`), bấm **Bắt đầu phiên**, rồi chat bình thường. Mỗi lần bấm "Bắt đầu phiên" sẽ nạp lại đúng nội dung hiện tại của `starter_v0/artifacts/system_prompt.md` và `starter_v0/artifacts/tools.yaml`.
+
 ## Tài liệu cần đọc
 
 | File | Dùng khi |

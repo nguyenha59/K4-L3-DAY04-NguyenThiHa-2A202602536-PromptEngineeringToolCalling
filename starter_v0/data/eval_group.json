@@ -1,7 +1,116 @@
 {
   "dataset_id": "day04_v3_helpdesk_group",
   "dataset_role": "group",
-  "description": "Template intentionally left empty. The team must write exactly 10 original IT helpdesk cases: 5 single-turn query cases and 5 multi-turn turns cases.",
+  "description": "10 original team-authored IT helpdesk cases: 5 single-turn (G01-G05) and 5 multi-turn (G06-G10). Written by Nguyen Thi Ha, finalized before v0 and kept unchanged through v1-v3.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_printer_network_check",
+      "phase": "B",
+      "suite": "group",
+      "query": "Máy in PR-404 báo mất kết nối mạng, kiểm tra giúp mình.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "PR-404", "check": "network"}}]},
+      "metadata": {"skill": "specific_check_selection", "difficulty": "medium", "what_it_tests": "Chọn đúng check=network khớp vấn đề nêu ra thay vì để mặc định all."}
+    },
+    {
+      "id": "G02_meeting_room_hardware_check",
+      "phase": "B",
+      "suite": "group",
+      "query": "Phòng họp RM-501 báo micro bị rớt kết nối, kiểm tra thiết bị giúp mình.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "RM-501", "check": "hardware"}}]},
+      "metadata": {"skill": "specific_check_selection", "difficulty": "medium", "what_it_tests": "Chọn đúng check=hardware cho thiết bị meeting_room thay vì all."}
+    },
+    {
+      "id": "G03_locked_account_lookup",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tài khoản nhân viên EMP-1003 đang báo bị khóa, tra cứu tình trạng giúp mình.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "lookup_user", "args": {"employee_id": "EMP-1003"}}]},
+      "metadata": {"skill": "account_status_routing", "difficulty": "easy", "what_it_tests": "Tra cứu tình trạng tài khoản dùng lookup_user, không suy diễn sang tool khác."}
+    },
+    {
+      "id": "G04_mobile_vpn_check",
+      "phase": "B",
+      "suite": "group",
+      "query": "Kiểm tra VPN trên điện thoại MB-012 giúp mình.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "MB-012", "check": "vpn"}}]},
+      "metadata": {"skill": "specific_check_selection", "difficulty": "medium", "what_it_tests": "Thiết bị mobile cũng phải chọn check=vpn khớp yêu cầu."}
+    },
+    {
+      "id": "G05_wifi_kb_category_only",
+      "phase": "B",
+      "suite": "group",
+      "query": "Wi-Fi trên LT-411 hay bị rớt, tìm hướng dẫn xử lý Wi-Fi giúp mình.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "search_kb", "args": {"category": "wifi"}}]},
+      "metadata": {"skill": "category_only_kb_search", "difficulty": "medium", "what_it_tests": "Dùng category=wifi và để query mặc định trống khi category đã đủ mô tả chủ đề."}
+    },
+    {
+      "id": "G06_cancel_ticket_to_kb",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tạo ticket phòng họp RM-501 vì micro bị rớt, mức medium."},
+        {"role": "user", "content": "Thôi không tạo ticket nữa."},
+        {"role": "user", "content": "Tìm hướng dẫn xử lý âm thanh phòng họp giúp mình."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "search_kb", "args": {"category": "meeting_room"}}]},
+      "metadata": {"skill": "multiturn_cancel_to_kb", "difficulty": "hard", "what_it_tests": "Sau khi hủy yêu cầu tạo ticket, chỉ trả lời yêu cầu KB mới nhất, không tạo ticket."}
+    },
+    {
+      "id": "G07_multiturn_confirmed_ticket",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Soạn ticket ổ đĩa cảnh báo SMART trên DT-031, mức medium."},
+        {"role": "user", "content": "Đổi mức ưu tiên thành high vì máy này quan trọng."},
+        {"role": "user", "content": "Đúng rồi, tôi xác nhận tạo ticket với thông tin trên."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "create_ticket", "args": {"asset_id": "DT-031", "priority": "high", "confirmed": true}}]},
+      "metadata": {"skill": "multiturn_confirmed_action", "difficulty": "hard", "what_it_tests": "Giữ chi tiết đã sửa và chỉ tạo ticket sau khi có xác nhận rõ ở lượt cuối."}
+    },
+    {
+      "id": "G08_switch_asset_target",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra tình trạng máy LT-411 giúp mình."},
+        {"role": "user", "content": "À nhầm, mình cần kiểm tra máy LT-318 chứ không phải LT-411."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "LT-318", "check": "all"}}]},
+      "metadata": {"skill": "multiturn_latest_asset_wins", "difficulty": "hard", "what_it_tests": "Yêu cầu sửa ở lượt sau phải thay thế asset_id cũ, không kiểm tra nhầm máy trước đó."}
+    },
+    {
+      "id": "G09_clarify_then_resolve",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra thiết bị của tôi giúp mình xem có vấn đề gì không."},
+        {"role": "user", "content": "Mã máy là LT-204 nhé."}
+      ],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "LT-204", "check": "all"}}]},
+      "metadata": {"skill": "multiturn_fill_missing_asset", "difficulty": "medium", "what_it_tests": "Khi asset_id đã được cung cấp ở lượt sau, dùng ngay, không hỏi lại lần nữa."}
+    },
+    {
+      "id": "G10_cancel_confirmed_ticket_switch_kb",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tôi xác nhận tạo ticket lỗi VPN trên LT-204 mức high."},
+        {"role": "user", "content": "Khoan đã, đừng tạo ticket đó nữa."},
+        {"role": "user", "content": "Thay vào đó tìm hướng dẫn xử lý VPN Windows giúp mình."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "search_kb", "args": {"category": "vpn"}}]},
+      "metadata": {"skill": "multiturn_cancel_confirmed_action", "difficulty": "hard", "what_it_tests": "Một xác nhận tạo ticket bị hủy ở lượt sau không được thực thi; latest intent (KB) phải thắng."}
+    }
+  ]
 }
